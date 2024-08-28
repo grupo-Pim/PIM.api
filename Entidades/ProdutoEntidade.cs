@@ -13,4 +13,12 @@
         public string Nome { get; set; }
         public int? ValorKG { get; set; }
     }
+    public class ProdutoInput
+    {
+        public int ID { get; set; }
+        public int EmpresaID { get; set; }
+        public int FornecedorID { get; set; }
+        public string Nome { get; set; }
+        public int? ValorKG { get; set; }
+    }
 }
