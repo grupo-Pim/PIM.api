@@ -12,15 +12,10 @@
         public string Nome { get; set; }
         public string CNPJ { get; set; }
         public string RazaoSocial { get; set; }
-        public bool PossuiContador { get; set; }
         public string? Email { get; set; }
         public string? Telefone { get; set; }
         public int? TipoEmpresa { get; set; }
         public bool? PossuiFilial { get; set; }
-        public string? NomeContador { get; set; }
-        public string? EmailContador { get; set; }
-        public string? NumeroContador { get; set; }
-
         //endereço
         public string? Rua { get; set; }
         public string? Numero { get; set; }

@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using PIM.api.Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,11 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("FazendaCs");
 var connectionStringMySql = builder.Configuration.GetConnectionString("ErpGarageCsMySql");
 
-builder.Services.AddDbContext<ErpGarageDbContext>(o => o.UseSqlServer(connectionString));
-
-
-
-
+builder.Services.AddDbContext<FazendoDbContext>(o => o.UseSqlServer(connectionString));
 
 
 builder.Services.AddControllers();
