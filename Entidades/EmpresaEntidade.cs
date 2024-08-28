@@ -1,4 +1,7 @@
-﻿namespace PIM.api.Entidades
+﻿using System.Runtime.ConstrainedExecution;
+using System.Security.Cryptography;
+
+namespace PIM.api.Entidades
 {
     public class EmpresaEntidade
     {
@@ -16,7 +19,6 @@
         public string? Telefone { get; set; }
         public int? TipoEmpresa { get; set; }
         public bool? PossuiFilial { get; set; }
-        //endereço
         public string? Rua { get; set; }
         public string? Numero { get; set; }
         public string? Cep { get; set; }
