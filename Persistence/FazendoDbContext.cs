@@ -16,6 +16,8 @@ public class FazendoDbContext : DbContext
     public DbSet<UsuarioEntidade> Usuarios { get; set; }
     public DbSet<MunicipioEntidade> Municipios { get; set; }
     public DbSet<EstadoEntidade> Estados { get; set; }
+    public DbSet<FornecedorEntidade> Fornecedor { get; set; }
+    public DbSet<ProdutoEntidade> Produto { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder Builder)
@@ -36,8 +38,9 @@ public class FazendoDbContext : DbContext
             o.Property(EE => EE.Cep).IsRequired(true);            
             o.HasOne(Et => Et.Municipio)
                 .WithMany()
-                .IsRequired(false)
-                .HasForeignKey(o => o.MunicipioID);
+                .IsRequired(true)
+                .HasForeignKey(o => o.MunicipioID)
+                .OnDelete(DeleteBehavior.Restrict);
         });
         Builder.Entity<UsuarioEntidade>(o =>
         {
@@ -52,18 +55,17 @@ public class FazendoDbContext : DbContext
         
             o.HasOne(UE => UE.Empresa)
                 .WithMany()
-                .IsRequired(false)
+                .IsRequired(true)
                 .HasForeignKey(o => o.EmpresaID);
         });
         Builder.Entity<MunicipioEntidade>(o =>
         {
             o.HasKey(EE => EE.ID);
             o.Property(UE => UE.Nome).IsRequired(true);
-            o.Property(UE => UE.Nome).IsRequired(true);
 
             o.HasOne(UE => UE.UF)
                 .WithMany()
-                .IsRequired(false)
+                .IsRequired(true)
                 .HasForeignKey(o => o.UFID);
         });
         Builder.Entity<EstadoEntidade>(o =>
@@ -72,7 +74,41 @@ public class FazendoDbContext : DbContext
             o.Property(UE => UE.Nome).IsRequired(true);
             o.Property(UE => UE.Nome).IsRequired(true);
         });
+        Builder.Entity<ProdutoEntidade>(o =>
+        {
+            o.HasKey(EE => EE.ID);
+            o.Property(UE => UE.Nome).IsRequired(true);
+            o.Property(UE => UE.ValorKG).IsRequired(false);
+
+            o.HasOne(UE => UE.Empresa)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.EmpresaID)
+                .OnDelete(DeleteBehavior.Restrict);
+            o.HasOne(UE => UE.Fornecedor)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.FornecedorID)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+        Builder.Entity<FornecedorEntidade>(o =>
+        {
+            o.HasKey(EE => EE.ID);
+            o.Property(UE => UE.Nome).IsRequired(true);
+            o.Property(UE => UE.CNPJ).IsRequired(true);
+            o.Property(UE => UE.Telefone).IsRequired(true);
+            o.Property(UE => UE.Email).IsRequired(false);
+
+            o.HasOne(UE => UE.Empresa)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.EmpresaID);
+            o.HasOne(UE => UE.Municipio)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.MunicipioID);
+        });
     }
 }
-//dotnet ef migrations add CriandoTb -o Persistence/Migrations
+//dotnet ef migrations add Criando_produto_fornecedor -o Persistence/Migrations
 //dotnet ef database update
