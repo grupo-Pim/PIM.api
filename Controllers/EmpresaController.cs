@@ -3,6 +3,7 @@ using PIM.api.Entidades;
 using PIM.api.Persistence;
 using System.Runtime.ConstrainedExecution;
 using System.Security.Cryptography;
+using static PIM.api.Enum.EnumSistemaFazenda;
 
 namespace PIM.api.Controllers
 {
@@ -23,7 +24,16 @@ namespace PIM.api.Controllers
             if (PossuiEmpresa) return BadRequest("Ja possui empresa com esse cnpj");
             Empresa.Municipio = null;
 
+            var UsuarioPadrao = new UsuarioEntidade();
+            UsuarioPadrao.EmpresaID = Empresa.ID;
+            UsuarioPadrao.Login = "Admin_" + Empresa.Nome;
+            UsuarioPadrao.Senha = "Admin";
+            UsuarioPadrao.Funcao = (int)EnumTipoUsuario.Diretor;
+            UsuarioPadrao.Ativo = true;
+            UsuarioPadrao.Nome = "Admin";
             _context.Empresas.Add(Empresa);
+            _context.Usuarios.Add(UsuarioPadrao);
+
             _context.SaveChanges();
             return Created("Empresa Criada", Empresa);
         }
