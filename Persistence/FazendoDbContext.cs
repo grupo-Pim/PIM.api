@@ -48,9 +48,9 @@ public class FazendoDbContext : DbContext
             o.Property(UE => UE.Nome).IsRequired(true);
             o.Property(UE => UE.Login).IsRequired(true);
             o.Property(UE => UE.Senha).IsRequired(true);
-            o.Property(UE => UE.Telefone).IsRequired(true);
+            o.Property(UE => UE.Telefone).IsRequired(false);
             o.Property(UE => UE.Funcao).IsRequired(true);
-            o.Property(UE => UE.Acesso).IsRequired(true);
+            o.Property(UE => UE.Acesso).IsRequired(false);
             o.Property(UE => UE.Ativo).IsRequired(true);
         
             o.HasOne(UE => UE.Empresa)
