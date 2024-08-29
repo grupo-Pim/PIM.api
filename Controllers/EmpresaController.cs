@@ -20,7 +20,7 @@ namespace PIM.api.Controllers
         [HttpPost]
         public IActionResult AddNovaEmpresa(EmpresaEntidade Empresa)
         {
-            bool PossuiEmpresa = _context.Empresa.Where(o=> o.CNPJ== Empresa.CNPJ).Any();
+            bool PossuiEmpresa = _context.Empresa.Where(o => o.CNPJ == Empresa.CNPJ).Any();
             if (PossuiEmpresa) return BadRequest("Ja possui empresa com esse cnpj");
             Empresa.Municipio = null;
 
@@ -38,12 +38,18 @@ namespace PIM.api.Controllers
             return Created("Empresa Criada", Empresa);
         }
         [HttpPut]
-        public IActionResult AlteraEmpresa(EmpresaEntidade EmpresaUpdate)
+        public IActionResult AlteraEmpresa(Guid Acesso, EmpresaEntidade EmpresaUpdate)
         {
-            var empresaAlvo = _context.Empresas.SingleOrDefault(o=> o.ID == EmpresaUpdate.ID);
+            var Permissao = PossuiPermissao(Acesso);
+            if (!Permissao.Existe)
+                return BadRequest(Permissao.Mensagem);
+            else if (!Permissao.PossuiPermissao)
+                return Forbid(Permissao.Mensagem);
+
+            var empresaAlvo = _context.Empresas.SingleOrDefault(o => o.ID == EmpresaUpdate.ID);
             if (empresaAlvo == null) return BadRequest("Empresa não encontada");
 
-            empresaAlvo.Ativo = EmpresaUpdate.Ativo;
+            empresaAlvo.Ativo = true;
             empresaAlvo.Nome = EmpresaUpdate.Nome;
             empresaAlvo.CNPJ = EmpresaUpdate.CNPJ;
             empresaAlvo.RazaoSocial = EmpresaUpdate.RazaoSocial;
@@ -60,20 +66,53 @@ namespace PIM.api.Controllers
             return Ok("Empresa atualizada");
         }
         [HttpGet]
-        public IActionResult DadosEmpresaID(int EmpresaID)
+        public IActionResult DadosEmpresaID(Guid Acesso, int EmpresaID)
         {
-            var empresa = _context.Empresa.SingleOrDefault(o=> o.ID == EmpresaID);
+            var Permissao = PossuiPermissao(Acesso);
+
+            if (!Permissao.Existe)
+                return BadRequest(Permissao.Mensagem);
+            else if (!Permissao.PossuiPermissao)
+                return Forbid(Permissao.Mensagem);
+
+            var empresa = _context.Empresa.SingleOrDefault(o => o.ID == EmpresaID);
             if (empresa == null) return BadRequest("Empresa não encontrada: " + EmpresaID);
 
             return Ok(empresa);
         }
         [HttpDelete]
-        public IActionResult ApagarEmpresa(int EmpresaID)
+        public IActionResult ApagarEmpresa(Guid Acesso, int EmpresaID)
         {
-            var Empresa = _context.Empresa.SingleOrDefault(o=> o.ID==EmpresaID);
-            if(Empresa == null) return NotFound("Empresa não encontrada: "+ EmpresaID);
+            var Permissao = PossuiPermissao(Acesso);
+
+            if (!Permissao.Existe)
+                return BadRequest(Permissao.Mensagem);
+            else if (!Permissao.PossuiPermissao)
+                return Forbid(Permissao.Mensagem);
+
+            var Empresa = _context.Empresa.SingleOrDefault(o => o.ID == EmpresaID);
+            if (Empresa == null) return NotFound("Empresa não encontrada: " + EmpresaID);
             Empresa.Ativo = false;
             return Ok("Empresa inativada");
+        }
+
+
+        private (bool Existe, bool PossuiPermissao, string Mensagem) PossuiPermissao(Guid acesso)
+        {
+            var User = _context.Usuarios.SingleOrDefault(o => o.Acesso == acesso);
+            bool Existe = User != null;
+            bool UsuarioPermitido = false;
+            string Mensagem = "";
+
+            if (!Existe)
+                return (Existe: Existe, PossuiPermissao: false, Mensagem: "Acesso não encontrado");
+
+            UsuarioPermitido = (byte)User.Funcao == (byte)EnumTipoUsuario.Diretor;
+
+            if (!UsuarioPermitido)
+                Mensagem = "Usuario não possui direiro de alterar empresa";
+
+            return (Existe: Existe, PossuiPermissao: UsuarioPermitido, Mensagem: Mensagem);
         }
 
     }
