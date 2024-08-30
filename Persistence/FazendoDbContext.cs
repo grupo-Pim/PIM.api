@@ -111,5 +111,5 @@ public class FazendoDbContext : DbContext
         });
     }
 }
-//dotnet ef migrations add Criando_produto_fornecedor -o Persistence/Migrations
+//dotnet ef migrations add statusAtivoFornecedor -o Persistence/Migrations
 //dotnet ef database update
