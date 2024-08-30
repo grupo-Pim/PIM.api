@@ -104,7 +104,21 @@ public class FazendoDbContext : DbContext
                 .IsRequired(true)
                 .HasForeignKey(o => o.MunicipioID);
         });
+        Builder.Entity<ProdutoFornecedor>(o =>
+        {
+            o.HasKey(PF => PF.ID);
+            o.Property(PF => PF.Valor).IsRequired(false);
+
+            o.HasOne(PF => PF.Fornecedor)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.FornecedorID);
+            o.HasOne(PF => PF.Produto)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.ProdutoID);
+        });
     }
 }
-//dotnet ef migrations add RetiradaRelacionamentoProduto -o Persistence/Migrations
+//dotnet ef migrations add tabelaRelacionamentoN_N -o Persistence/Migrations
 //dotnet ef database update
