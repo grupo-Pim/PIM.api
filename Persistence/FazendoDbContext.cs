@@ -98,6 +98,7 @@ public class FazendoDbContext : DbContext
             o.Property(UE => UE.CNPJ).IsRequired(true);
             o.Property(UE => UE.Telefone).IsRequired(true);
             o.Property(UE => UE.Email).IsRequired(false);
+            o.Property(UE => UE.Ativo).IsRequired(true).HasDefaultValue(true);
 
             o.HasOne(UE => UE.Empresa)
                 .WithMany()

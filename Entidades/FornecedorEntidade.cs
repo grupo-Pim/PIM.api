@@ -14,6 +14,7 @@
         public string? Email { get; set; }
         public MunicipioEntidade Municipio { get; set; }
         public int MunicipioID { get; set; }
+        public bool Ativo { get; set; }
     }
     public class FonecedorInput
     {
