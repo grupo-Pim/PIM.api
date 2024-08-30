@@ -85,11 +85,6 @@ public class FazendoDbContext : DbContext
                 .IsRequired(true)
                 .HasForeignKey(o => o.EmpresaID)
                 .OnDelete(DeleteBehavior.Restrict);
-            o.HasOne(UE => UE.Fornecedor)
-                .WithMany()
-                .IsRequired(true)
-                .HasForeignKey(o => o.FornecedorID)
-                .OnDelete(DeleteBehavior.Restrict);
         });
         Builder.Entity<FornecedorEntidade>(o =>
         {
@@ -111,5 +106,5 @@ public class FazendoDbContext : DbContext
         });
     }
 }
-//dotnet ef migrations add statusAtivoFornecedor -o Persistence/Migrations
+//dotnet ef migrations add RetiradaRelacionamentoProduto -o Persistence/Migrations
 //dotnet ef database update
