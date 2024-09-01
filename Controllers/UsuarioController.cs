@@ -15,8 +15,8 @@ namespace PIM.api.Controllers
             _context = context;
         }
 
-        [HttpPost]
-        public IActionResult AddNovoUsuario(Guid Acesso, UsuarioEntidade NovoUsuario)
+        [HttpPost("Colaboradores")]
+        public IActionResult AddNovoUsuario(Guid Acesso, ColaboradorEntidade NovoUsuario)
         {
             var Permissao = PossuiPermissao(Acesso);
 
@@ -25,86 +25,175 @@ namespace PIM.api.Controllers
             else if (!Permissao.PossuiPermissao)
                 return Forbid(Permissao.Mensagem);
 
-            int empresaID = _context.Usuarios.Single(o => o.Acesso == Acesso).EmpresaID;
-            NovoUsuario.Empresa = null;
-            NovoUsuario.EmpresaID = empresaID;
+            int empresaID = _context.Colaboradores.Single(o => o.Usuario.Acesso == Acesso).Usuario.EmpresaID;
+            NovoUsuario.Usuario.Empresa = null;
+            NovoUsuario.Usuario.EmpresaID = empresaID;
 
-            _context.Usuarios.Add(NovoUsuario);
+            _context.Colaboradores.Add(NovoUsuario);
             _context.SaveChanges();
 
             return Created("Usuario criado", NovoUsuario);
         }
-        [HttpPut]
-        public IActionResult AlterarUsuario(Guid Acesso, UsuarioEntidade UsuarioUpdade)
+        [HttpPut("Colaboradores")]
+        public IActionResult AlterarUsuario(Guid Acesso, ColaboradorEntidade UsuarioUpdade)
         {
-            UsuarioUpdade.Empresa = null;
+            UsuarioUpdade.Usuario.Empresa = null;
 
-            var usuarioAlterando = _context.Usuarios.SingleOrDefault(o => o.Acesso == Acesso);
+            var usuarioAlterando = _context.Colaboradores.SingleOrDefault(o => o.Usuario.Acesso == Acesso);
             if (usuarioAlterando == null) return BadRequest("Acesso não encontrado");
             var Permissao = PossuiPermissao(Acesso);
-            if (!Permissao.PossuiPermissao && usuarioAlterando.ID != UsuarioUpdade.ID)
+            if (!Permissao.PossuiPermissao && usuarioAlterando.Usuario.ID != UsuarioUpdade.Usuario.ID)
                 return Forbid(Permissao.Mensagem);
 
-            var UserAlvo = _context.Usuarios.SingleOrDefault(o => o.Acesso == Acesso);
+            var UserAlvo = _context.Colaboradores.SingleOrDefault(o => o.Usuario.Acesso == Acesso);
             if (UserAlvo == null) return BadRequest("Usuario a ser atualizado não encontrado");
 
-            UserAlvo.Acesso = null;
-            UserAlvo.Nome = UsuarioUpdade.Nome;
-            UserAlvo.Login = UsuarioUpdade.Login;
-            UserAlvo.Senha = UsuarioUpdade.Senha;
-            UserAlvo.Telefone = UsuarioUpdade.Telefone;
+            UserAlvo.Usuario.Acesso = null;
+            UserAlvo.Usuario.Nome = UsuarioUpdade.Usuario.Nome;
+            UserAlvo.Usuario.Login = UsuarioUpdade.Usuario.Login;
+            UserAlvo.Usuario.Senha = UsuarioUpdade.Usuario.Senha;
+            UserAlvo.Usuario.Telefone = UsuarioUpdade.Usuario.Telefone;
             UserAlvo.Funcao = UsuarioUpdade.Funcao;
             _context.SaveChanges();
 
             return Ok("Usuario alterado");
         }
-        [HttpGet]
+        [HttpGet("Colaboradores/Listar")]
         public IActionResult ListaUsuarios(Guid Acesso, bool UsuariosAtivos)
         {
-            var User = _context.Usuarios.SingleOrDefault(o => o.Acesso == Acesso);
+            var User = _context.Colaboradores.SingleOrDefault(o => o.Usuario.Acesso == Acesso);
             if (User == null) return BadRequest("Usuario não encontrado: " + Acesso);
 
-            List<PermissaoEditarUser> ListaUsuarios = permissaoEditarUsers(User.EmpresaID, (EnumTipoUsuario)User.Funcao, User.ID, UsuariosAtivos);
+            List<PermissaoEditarUser> ListaUsuarios = permissaoEditarUsers(User.Usuario.EmpresaID, (EnumTipoUsuario)User.Funcao, User.Usuario.ID, UsuariosAtivos);
 
             return Ok(ListaUsuarios);
         }
-        [HttpGet("Unico")]
+        [HttpGet("Colaboradores/Unico")]
         public IActionResult UsuarioUnico(int ID)
         {
-            var User = _context.Usuarios.SingleOrDefault(o => o.ID == ID);
+            var User = _context.Colaboradores.SingleOrDefault(o => o.Usuario.ID == ID);
             if (User == null) return BadRequest("Usuario não entrado: " + ID);
-            User.Senha = "";
-            User.Acesso = null;
-            User.Empresa = null;
+            User.Usuario.Senha = "";
+            User.Usuario.Acesso = null;
+            User.Usuario.Empresa = null;
             return Ok(User);
         }
-        [HttpDelete]
+        [HttpDelete("Colaboradores")]
         public IActionResult InativarUser(Guid Acesso, int ID)
         {
-            var User = _context.Usuarios.SingleOrDefault(o=> o.ID == ID);
+            var User = _context.Colaboradores.SingleOrDefault(o=> o.Usuario.ID == ID);
             if (User == null) return BadRequest("Usuario não entrado: " + ID);
-            var UserAcesso = _context.Usuarios.SingleOrDefault(o=> o.ID == ID);
+            var UserAcesso = _context.Colaboradores.SingleOrDefault(o=> o.Usuario.ID == ID);
             if (UserAcesso == null) return BadRequest("Usuario editando não entrado: " + Acesso);
 
 
             bool possuiPermissaão =
                             UserAcesso.Funcao == (int)EnumTipoUsuario.Diretor
                         || (UserAcesso.Funcao == (int)EnumTipoUsuario.Coordenador && User.Funcao == (int)EnumTipoUsuario.Produtor)
-                        || User.ID == UserAcesso.ID;
+                        || User.Usuario.ID == UserAcesso.Usuario.ID;
             if (UserAcesso.Funcao != (int)EnumTipoUsuario.Diretor) return Forbid("Usuario editando não possui acesso suficiente");
 
-            User.Ativo = false;
-            User.Senha = "";
+            User.Usuario.Ativo = false;
+            User.Usuario.Senha = "";
             _context.SaveChanges();
             return Ok("Inativado");
         }
 
 
+        [HttpPost("Cliente")]
+        public IActionResult AddNovoCliente(Guid AcessoColaborador, ClienteEntidade NovoCliente)
+        {
+            var Permissao = PossuiPermissao(AcessoColaborador);
+
+            if (!Permissao.Existe)
+                return BadRequest(Permissao.Mensagem);
+            else if (!Permissao.PossuiPermissao)
+                return Forbid(Permissao.Mensagem);
+
+            int empresaID = _context.Clientes.Single(o => o.Usuario.Acesso == AcessoColaborador).Usuario.EmpresaID;
+            NovoCliente.Usuario.Empresa = null;
+            NovoCliente.Usuario.EmpresaID = empresaID;
+
+            _context.Clientes.Add(NovoCliente);
+            _context.SaveChanges();
+
+            return Created("Usuario criado", NovoCliente);
+        }
+        [HttpPut("Cliente")]
+        public IActionResult AlterarCliente(Guid Acesso, ClienteEntidade ClienteUpdade, bool serColaborador)
+        {
+            ClienteUpdade.Usuario.Empresa = null;
+
+            if (serColaborador)
+            {
+                var usuarioAlterando = _context.Clientes.SingleOrDefault(o => o.Usuario.Acesso == Acesso);
+                if (usuarioAlterando == null) return BadRequest("Acesso não encontrado");
+                var Permissao = PossuiPermissao(Acesso);
+                if (!Permissao.PossuiPermissao && usuarioAlterando.Usuario.ID != ClienteUpdade.Usuario.ID)
+                    return Forbid(Permissao.Mensagem);
+            }
+            else
+            {
+                var usuarioAlterando = _context.Clientes.SingleOrDefault(o => o.Usuario.Acesso == Acesso);
+                if (usuarioAlterando == null || usuarioAlterando.Usuario.ID != ClienteUpdade.Usuario.ID) 
+                    return Forbid("Não permitido ou não encontrado");
+            }
+
+            var UserAlvo = _context.Clientes.SingleOrDefault(o => o.Usuario.Acesso == Acesso);
+            if (UserAlvo == null) return BadRequest("Usuario a ser atualizado não encontrado");
+
+            UserAlvo.Usuario.Acesso = null;
+            UserAlvo.Usuario.Nome = ClienteUpdade.Usuario.Nome;
+            UserAlvo.Usuario.Login = ClienteUpdade.Usuario.Login;
+            UserAlvo.Usuario.Senha = ClienteUpdade.Usuario.Senha;
+            UserAlvo.Usuario.Telefone = ClienteUpdade.Usuario.Telefone;
+            _context.SaveChanges();
+
+            return Ok("Usuario alterado");
+        }
+        [HttpGet("Cliente/Listar")]
+        public IActionResult ListaCliente(Guid AcessoColaborador, bool UsuariosAtivos)
+        {
+            var User = _context.Colaboradores.SingleOrDefault(o => o.Usuario.Acesso == AcessoColaborador);
+            if (User == null) return BadRequest("Usuario não encontrado: " + AcessoColaborador);
+            List<PermissaoEditarUser> ListaUsuarios = permissaoEditarCliente(User.Usuario.EmpresaID, (EnumTipoUsuario)User.Funcao, UsuariosAtivos);
+            
+            return Ok(ListaUsuarios);
+        }
+        [HttpGet("Cliente/Unico")]
+        public IActionResult UsuarioCliente(int ID)
+        {
+            var User = _context.Clientes.SingleOrDefault(o => o.Usuario.ID == ID);
+            if (User == null) return BadRequest("Usuario não entrado: " + ID);
+            User.Usuario.Senha = "";
+            User.Usuario.Acesso = null;
+            User.Usuario.Empresa = null;
+            return Ok(User);
+        }
+        [HttpDelete("Cliente")]
+        public IActionResult InativarCliente(Guid Acesso, int ID)
+        {
+            var User = _context.Clientes.SingleOrDefault(o=> o.Usuario.ID == ID);
+            if (User == null) return BadRequest("Usuario não entrado: " + ID);
+            var UserAcesso = _context.Colaboradores.SingleOrDefault(o=> o.Usuario.ID == ID);
+            if (UserAcesso == null) return BadRequest("Usuario editando não entrado: " + Acesso);
+
+            bool possuiPermissaão =
+                            UserAcesso.Funcao == (int)EnumTipoUsuario.Diretor
+                        || UserAcesso.Funcao == (int)EnumTipoUsuario.Coordenador;
+            if (UserAcesso.Funcao != (int)EnumTipoUsuario.Diretor) return Forbid("Usuario editando não possui acesso suficiente");
+
+            User.Usuario.Ativo = false;
+            User.Usuario.Senha = "";
+            _context.SaveChanges();
+            return Ok("Inativado");
+        }
+
 
         private List< PermissaoEditarUser > permissaoEditarUsers(int EmpresaID, EnumTipoUsuario TipoUsuario, int UsuarioEditandoID, bool Ativo)
         {
-            var ListaUsuarios = _context.Usuarios
-                .Where(o=> o.EmpresaID == EmpresaID && o.Ativo == Ativo).ToList()
+            var ListaUsuarios = _context.Colaboradores
+                .Where(o=> o.Usuario.EmpresaID == EmpresaID && o.Usuario.Ativo == Ativo).ToList()
                 .Select(o=>
                 {
                     bool PodeEditar = false;
@@ -112,31 +201,46 @@ namespace PIM.api.Controllers
                     PodeEditar = 
                             TipoUsuario == EnumTipoUsuario.Diretor
                         || (TipoUsuario == EnumTipoUsuario.Coordenador && o.Funcao == (int)EnumTipoUsuario.Produtor)
-                        ||  UsuarioEditandoID == o.ID;
+                        ||  UsuarioEditandoID == o.Usuario.ID;
 
                     return new PermissaoEditarUser
                     {
                         PodeEditar = PodeEditar,
-                        Nome = o.Nome,
-                        Login = PodeEditar? o.Login : "",
-                        Ativo = o.Ativo,
-                        Telefone = o.Telefone,
+                        Nome = o.Usuario.Nome,
+                        Login = PodeEditar? o.Usuario.Login : "",
+                        Ativo = o.Usuario.Ativo,
+                        Telefone = o.Usuario.Telefone,
                         Funcao = o.Funcao
                     };
                 }).ToList();
 
-                
-                
+            return ListaUsuarios;
+        }
 
+        private List< PermissaoEditarUser > permissaoEditarCliente(int EmpresaID, EnumTipoUsuario TipoUsuario, bool Ativo)
+        {
+            bool PodeEditar = TipoUsuario == EnumTipoUsuario.Diretor || TipoUsuario == EnumTipoUsuario.Coordenador;
 
-
+            var ListaUsuarios = _context.Clientes
+                .Where(o=> o.Usuario.EmpresaID == EmpresaID && o.Usuario.Ativo == Ativo).ToList()
+                .Select(o=>
+                {
+                    return new PermissaoEditarUser
+                    {
+                        PodeEditar = PodeEditar,
+                        Nome = o.Usuario.Nome,
+                        Login = PodeEditar? o.Usuario.Login : "",
+                        Ativo = o.Usuario.Ativo,
+                        Telefone = o.Usuario.Telefone
+                    };
+                }).ToList();
 
             return ListaUsuarios;
         }
 
         private (bool Existe, bool PossuiPermissao, string Mensagem) PossuiPermissao(Guid acesso)
         {
-            var User = _context.Usuarios.SingleOrDefault(o => o.Acesso == acesso);
+            var User = _context.Colaboradores.SingleOrDefault(o => o.Usuario.Acesso == acesso);
             bool Existe = User != null;
             bool UsuarioPermitido = false;
             string Mensagem = "";

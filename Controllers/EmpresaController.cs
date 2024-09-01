@@ -29,8 +29,8 @@ namespace PIM.api.Controllers
             _context.SaveChanges();
 
             int EmpresaID = _context.Empresa.Single(o=> o.CNPJ.Equals(Empresa.CNPJ)).ID;
-            var UsuarioPadrao = new UsuarioEntidade(Empresa.ID, "Admin", "Admin_" + Empresa.Nome, "Admin", (int)EnumTipoUsuario.Diretor);
-            _context.Usuarios.Add(UsuarioPadrao);
+            var UsuarioPadrao = new ColaboradorEntidade(EmpresaID, "Admin", "Admin_" + Empresa.Nome, "Admin", (int)EnumTipoUsuario.Diretor, true);
+            _context.Colaboradores.Add(UsuarioPadrao);
             _context.SaveChanges();
 
             return Created("Empresa Criada", Empresa);
@@ -97,7 +97,7 @@ namespace PIM.api.Controllers
 
         private (bool Existe, bool PossuiPermissao, string Mensagem) PossuiPermissao(Guid acesso)
         {
-            var User = _context.Usuarios.SingleOrDefault(o => o.Acesso == acesso);
+            var User = _context.Colaboradores.SingleOrDefault(o => o.Usuario.Acesso == acesso);
             bool Existe = User != null;
             bool UsuarioPermitido = false;
             string Mensagem = "";

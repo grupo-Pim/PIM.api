@@ -80,7 +80,7 @@ namespace PIM.api.Controllers
 
         private (bool possuiPermissao, bool existe, string Mensagem) userPossuiPermissao(Guid acesso)
         {
-            var user = _context.Usuarios.FirstOrDefault(o => o.Acesso == acesso);
+            var user = _context.Colaboradores.FirstOrDefault(o => o.Usuario.Acesso == acesso);
             if (user == null) return (possuiPermissao: false, existe: false, Mensagem: "Usuario não existe");
 
             if (user.Funcao == (int)EnumTipoUsuario.Produtor) return (possuiPermissao: false, existe: true, Mensagem: "Usuario não possui permissão");

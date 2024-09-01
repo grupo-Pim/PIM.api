@@ -21,7 +21,7 @@ namespace PIM.api.Controllers
             NovoFornecedor.Empresa = null;
             NovoFornecedor.Municipio = null;
             
-            var userCriando = _context.Usuarios.FirstOrDefault(o=> o.Acesso == Acesso);
+            var userCriando = _context.Colaboradores.FirstOrDefault(o=> o.Usuario.Acesso == Acesso);
             if (userCriando == null) return BadRequest("Usuario não encontrado");
 
             if (userCriando.Funcao != (int)EnumTipoUsuario.Diretor || userCriando.Funcao != (int)EnumTipoUsuario.Coordenador)
@@ -38,7 +38,7 @@ namespace PIM.api.Controllers
             FornecedorUpdate.Empresa = null;
             FornecedorUpdate.Municipio = null;
 
-            var userCriando = _context.Usuarios.FirstOrDefault(o => o.Acesso == Acesso);
+            var userCriando = _context.Colaboradores.FirstOrDefault(o => o.Usuario.Acesso == Acesso);
             if (userCriando == null) return BadRequest("Usuario não encontrado");
 
             if (userCriando.Funcao != (int)EnumTipoUsuario.Diretor || userCriando.Funcao != (int)EnumTipoUsuario.Coordenador)
@@ -69,7 +69,7 @@ namespace PIM.api.Controllers
         [HttpDelete]
         public IActionResult ApagarFornecedor(Guid Acesso, int FornecedorID)
         {
-            var userCriando = _context.Usuarios.FirstOrDefault(o => o.Acesso == Acesso);
+            var userCriando = _context.Colaboradores.FirstOrDefault(o => o.Usuario.Acesso == Acesso);
             if (userCriando == null) return BadRequest("Usuario não encontrado");
 
             if (userCriando.Funcao != (int)EnumTipoUsuario.Diretor || userCriando.Funcao != (int)EnumTipoUsuario.Coordenador)

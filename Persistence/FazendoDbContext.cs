@@ -15,6 +15,8 @@ public class FazendoDbContext : DbContext
     }
     public DbSet<EmpresaEntidade> Empresa { get; set; }
     public DbSet<UsuarioEntidade> Usuarios { get; set; }
+    public DbSet<ColaboradorEntidade> Colaboradores { get; set; }
+    public DbSet<ClienteEntidade> Clientes { get; set; }
     public DbSet<MunicipioEntidade> Municipios { get; set; }
     public DbSet<EstadoEntidade> Estados { get; set; }
     public DbSet<FornecedorEntidade> Fornecedor { get; set; }
@@ -52,14 +54,40 @@ public class FazendoDbContext : DbContext
             o.Property(UE => UE.Login).IsRequired(true);
             o.Property(UE => UE.Senha).IsRequired(true);
             o.Property(UE => UE.Telefone).IsRequired(false);
-            o.Property(UE => UE.Funcao).IsRequired(true);
             o.Property(UE => UE.Acesso).IsRequired(false);
             o.Property(UE => UE.Ativo).IsRequired(true);
-        
+            o.Property(UE => UE.SerColaborador).IsRequired(true);
+
             o.HasOne(UE => UE.Empresa)
                 .WithMany()
                 .IsRequired(true)
                 .HasForeignKey(o => o.EmpresaID);
+        });
+        Builder.Entity<ColaboradorEntidade>(o =>
+        {
+            o.HasKey(UE => UE.ID);
+            o.Property(UE => UE.Funcao).IsRequired(true);
+
+            o.HasOne(UE => UE.Usuario)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.UsuarioID);
+        });
+        Builder.Entity<ClienteEntidade>(o =>
+        {
+            o.HasKey(UE => UE.ID);            
+            o.Property(UE => UE.Rua).IsRequired(false);
+            o.Property(UE => UE.Numero).IsRequired(false);
+            o.Property(UE => UE.Cep).IsRequired(false);
+
+            o.HasOne(UE => UE.Usuario)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.UsuarioID);
+            o.HasOne(UE => UE.Municipio)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.MunicipioID);
         });
         Builder.Entity<MunicipioEntidade>(o =>
         {
@@ -139,5 +167,5 @@ public class FazendoDbContext : DbContext
         });
     }
 }
-//dotnet ef migrations add ColunaAtivoLocal -o Persistence/Migrations
+//dotnet ef migrations add reestruturacaoTBUsuarios -o Persistence/Migrations
 //dotnet ef database update
