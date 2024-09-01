@@ -17,5 +17,6 @@ namespace PIM.api.Entidades
         public int Tamanho { get; set; }
         public string Localizacao { get; set; }
         public string? Nome { get; set; }
+        public bool Ativo { get; set; }
     }
 }
