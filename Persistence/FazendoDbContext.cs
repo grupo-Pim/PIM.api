@@ -23,6 +23,7 @@ public class FazendoDbContext : DbContext
     public DbSet<ProdutoEntidade> Produto { get; set; }
     public DbSet<ProdutoFornecedor> ProdutoFornecedor { get; set; }
     public DbSet<LocalPlantioEntidade> LocalPlantio { get; set; }
+    public DbSet<PlantioEntidade> Plantio { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder Builder)
@@ -165,7 +166,27 @@ public class FazendoDbContext : DbContext
                 .IsRequired(true)
                 .HasForeignKey(o => o.EmpresaID);
         });
+        Builder.Entity<PlantioEntidade>(o =>
+        {
+            o.HasKey(EE => EE.ID);
+            o.Property(UE => UE.Nome).IsRequired(false);
+            o.Property(UE => UE.Etapa).IsRequired(true);
+            o.Property(UE => UE.DataPlantio).IsRequired(true);
+            o.Property(UE => UE.DataColheita).IsRequired(false);
+            o.Property(UE => UE.Descricao).IsRequired(false);
+
+            o.HasOne(UE => UE.Empresa)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.EmpresaID);
+            o.HasOne(UE => UE.Local)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.LocalID)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+        
     }
 }
-//dotnet ef migrations add reestruturacaoTBUsuarios -o Persistence/Migrations
+//dotnet ef migrations add PlantioTB -o Persistence/Migrations
 //dotnet ef database update
