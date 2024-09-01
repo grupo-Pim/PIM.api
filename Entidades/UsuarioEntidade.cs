@@ -6,6 +6,14 @@
         {
             
         }
+        public UsuarioEntidade(int empresaID, string Nome, string Login, string Senha, int Funcao)
+        {
+            this.EmpresaID = empresaID;
+            this.Nome = Nome;
+            this.Login = Login;
+            this.Senha = Senha;
+            this.Funcao = Funcao;
+        }
         public int ID { get; set; }
         public EmpresaEntidade Empresa { get; set; }
         public int EmpresaID { get; set; }

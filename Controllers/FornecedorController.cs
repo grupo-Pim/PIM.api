@@ -56,7 +56,7 @@ namespace PIM.api.Controllers
             return Ok("Fornecedor atualizado");
         }
         [HttpGet]
-        public IActionResult AlterarFornecedor(Guid Acesso, int FornecedorID)
+        public IActionResult GetFornecedor(Guid Acesso, int FornecedorID)
         {
             var userCriando = _context.Usuarios.FirstOrDefault(o => o.Acesso == Acesso);
             if (userCriando == null) return BadRequest("Usuario não encontrado");

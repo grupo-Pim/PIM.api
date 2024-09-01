@@ -177,48 +177,43 @@ namespace PIM.api.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
-                    b.Property<int>("EmpresaID")
-                        .HasColumnType("int");
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
-                    b.Property<int>("FornecedorID")
+                    b.Property<int>("EmpresaID")
                         .HasColumnType("int");
 
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ValorKG")
+                    b.Property<int?>("ValorVendaKG")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
 
                     b.HasIndex("EmpresaID");
 
-                    b.HasIndex("FornecedorID");
-
                     b.ToTable("Produto");
                 });
 
             modelBuilder.Entity("PIM.api.Entidades.ProdutoFornecedor", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
-
                     b.Property<int>("FornecedorID")
                         .HasColumnType("int");
 
                     b.Property<int>("ProdutoID")
                         .HasColumnType("int");
 
+                    b.Property<int>("ID")
+                        .HasColumnType("int");
+
                     b.Property<float?>("Valor")
                         .HasColumnType("real");
 
-                    b.HasKey("ID");
-
-                    b.HasIndex("FornecedorID");
+                    b.HasKey("FornecedorID", "ProdutoID");
 
                     b.HasIndex("ProdutoID");
 
@@ -283,13 +278,13 @@ namespace PIM.api.Persistence.Migrations
                     b.HasOne("PIM.api.Entidades.EmpresaEntidade", "Empresa")
                         .WithMany()
                         .HasForeignKey("EmpresaID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("PIM.api.Entidades.MunicipioEntidade", "Municipio")
                         .WithMany()
                         .HasForeignKey("MunicipioID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Empresa");
@@ -313,32 +308,24 @@ namespace PIM.api.Persistence.Migrations
                     b.HasOne("PIM.api.Entidades.EmpresaEntidade", "Empresa")
                         .WithMany()
                         .HasForeignKey("EmpresaID")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("PIM.api.Entidades.FornecedorEntidade", "Fornecedor")
-                        .WithMany()
-                        .HasForeignKey("FornecedorID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Empresa");
-
-                    b.Navigation("Fornecedor");
                 });
 
             modelBuilder.Entity("PIM.api.Entidades.ProdutoFornecedor", b =>
                 {
                     b.HasOne("PIM.api.Entidades.FornecedorEntidade", "Fornecedor")
-                        .WithMany()
+                        .WithMany("ProdutoFornecedor")
                         .HasForeignKey("FornecedorID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("PIM.api.Entidades.ProdutoEntidade", "Produto")
-                        .WithMany()
+                        .WithMany("ProdutoFornecedor")
                         .HasForeignKey("ProdutoID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Fornecedor");
@@ -355,6 +342,16 @@ namespace PIM.api.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Empresa");
+                });
+
+            modelBuilder.Entity("PIM.api.Entidades.FornecedorEntidade", b =>
+                {
+                    b.Navigation("ProdutoFornecedor");
+                });
+
+            modelBuilder.Entity("PIM.api.Entidades.ProdutoEntidade", b =>
+                {
+                    b.Navigation("ProdutoFornecedor");
                 });
 #pragma warning restore 612, 618
         }
