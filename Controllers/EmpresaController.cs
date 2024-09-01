@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PIM.api.Entidades;
 using PIM.api.Persistence;
+using System;
 using System.Runtime.ConstrainedExecution;
 using System.Security.Cryptography;
 using static PIM.api.Enum.EnumSistemaFazenda;
@@ -20,21 +21,18 @@ namespace PIM.api.Controllers
         [HttpPost]
         public IActionResult AddNovaEmpresa(EmpresaEntidade Empresa)
         {
-            bool PossuiEmpresa = _context.Empresa.Where(o => o.CNPJ == Empresa.CNPJ).Any();
+            bool PossuiEmpresa = _context.Empresa.Any(o => o.CNPJ == Empresa.CNPJ);
             if (PossuiEmpresa) return BadRequest("Ja possui empresa com esse cnpj");
             Empresa.Municipio = null;
 
-            var UsuarioPadrao = new UsuarioEntidade();
-            UsuarioPadrao.EmpresaID = Empresa.ID;
-            UsuarioPadrao.Login = "Admin_" + Empresa.Nome;
-            UsuarioPadrao.Senha = "Admin";
-            UsuarioPadrao.Funcao = (int)EnumTipoUsuario.Diretor;
-            UsuarioPadrao.Ativo = true;
-            UsuarioPadrao.Nome = "Admin";
-            _context.Empresas.Add(Empresa);
-            _context.Usuarios.Add(UsuarioPadrao);
-
+            _context.Empresa.Add(Empresa);
             _context.SaveChanges();
+
+            int EmpresaID = _context.Empresa.Single(o=> o.CNPJ.Equals(Empresa.CNPJ)).ID;
+            var UsuarioPadrao = new UsuarioEntidade(Empresa.ID, "Admin", "Admin_" + Empresa.Nome, "Admin", (int)EnumTipoUsuario.Diretor);
+            _context.Usuarios.Add(UsuarioPadrao);
+            _context.SaveChanges();
+
             return Created("Empresa Criada", Empresa);
         }
         [HttpPut]
