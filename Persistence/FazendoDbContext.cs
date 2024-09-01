@@ -129,6 +129,7 @@ public class FazendoDbContext : DbContext
             o.HasKey(EE => EE.ID);
             o.Property(UE => UE.Tamanho).IsRequired(true);
             o.Property(UE => UE.Localizacao).IsRequired(true);
+            o.Property(UE => UE.Ativo).IsRequired(true).HasDefaultValue(true);
             o.Property(UE => UE.Nome).IsRequired(false);
 
             o.HasOne(UE => UE.Empresa)
@@ -138,5 +139,5 @@ public class FazendoDbContext : DbContext
         });
     }
 }
-//dotnet ef migrations add LocalPlantio -o Persistence/Migrations
+//dotnet ef migrations add ColunaAtivoLocal -o Persistence/Migrations
 //dotnet ef database update
