@@ -179,6 +179,11 @@ public class FazendoDbContext : DbContext
                 .WithMany()
                 .IsRequired(true)
                 .HasForeignKey(o => o.EmpresaID);
+            o.HasOne(UE => UE.Produto)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.ProdutoID)
+                .OnDelete(DeleteBehavior.Restrict);
             o.HasOne(UE => UE.Local)
                 .WithMany()
                 .IsRequired(true)
@@ -220,5 +225,6 @@ public class FazendoDbContext : DbContext
         
     }
 }
-//dotnet ef migrations add ClienteTB -o Persistence/Migrations
+//dotnet ef migrations add RelacionamentoProdutoPlantio -o Persistence/Migrations
 //dotnet ef database update
+//dotnet ef migrations remove

@@ -9,6 +9,8 @@
         public int ID { get; set; }
         public int EmpresaID { get; set; }
         public EmpresaEntidade Empresa { get; set; }
+        public int ProdutoID { get; set; }
+        public ProdutoEntidade Produto { get; set; }
         public string? Descricao { get; set; }
         public string? Nome { get; set; }
         public LocalPlantioEntidade Local { get; set; }
