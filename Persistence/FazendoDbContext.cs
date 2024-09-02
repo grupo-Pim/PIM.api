@@ -204,8 +204,21 @@ public class FazendoDbContext : DbContext
                 .HasForeignKey(o => o.ProdutoID)
                 .OnDelete(DeleteBehavior.Restrict);
         });
+        Builder.Entity<ClienteEntidade>(o =>
+        {
+            o.HasKey(EE => EE.ID);
+            o.Property(UE => UE.Rua).IsRequired(false);
+            o.Property(UE => UE.Numero).IsRequired(false);
+            o.Property(UE => UE.Cep).IsRequired(false);
+
+            o.HasOne(UE => UE.Usuario)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.UsuarioID)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
         
     }
 }
-//dotnet ef migrations add PedidosTB -o Persistence/Migrations
+//dotnet ef migrations add ClienteTB -o Persistence/Migrations
 //dotnet ef database update
