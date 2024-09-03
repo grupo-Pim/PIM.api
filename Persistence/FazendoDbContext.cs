@@ -25,6 +25,7 @@ public class FazendoDbContext : DbContext
     public DbSet<LocalPlantioEntidade> LocalPlantio { get; set; }
     public DbSet<PlantioEntidade> Plantio { get; set; }
     public DbSet<MovimentacoesPlantioEntidade> MovimentacoesPlantio { get; set; }
+    public DbSet<PedidosEntidade> Pedidos { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder Builder)
@@ -209,6 +210,11 @@ public class FazendoDbContext : DbContext
                 .IsRequired(true)
                 .HasForeignKey(o => o.ProdutoID)
                 .OnDelete(DeleteBehavior.Restrict);
+            o.HasOne(UE => UE.Cliente)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.ClienteID)
+                .OnDelete(DeleteBehavior.Restrict);
         });
         Builder.Entity<ClienteEntidade>(o =>
         {
@@ -245,6 +251,6 @@ public class FazendoDbContext : DbContext
         
     }
 }
-//dotnet ef migrations add MovimentacoesPlantio -o Persistence/Migrations
+//dotnet ef migrations add addClienteNoPedido -o Persistence/Migrations
 //dotnet ef database update
 //dotnet ef migrations remove

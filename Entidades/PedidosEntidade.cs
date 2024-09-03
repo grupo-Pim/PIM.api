@@ -11,6 +11,8 @@
 
         public int ProdutoID { get; set; }
         public ProdutoEntidade Produto { get; set; }
+        public int ClienteID { get; set; }
+        public ClienteEntidade Cliente { get; set; }
         public int Quantidade { get; set; }
         public string? Observacao { get; set; }
         public DateTime DtPedido { get; set; }

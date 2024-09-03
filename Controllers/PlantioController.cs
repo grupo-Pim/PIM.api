@@ -77,8 +77,7 @@ namespace PIM.api.Controllers
             if (colaborador == null) return BadRequest("Acesso não encontrado");
             List<PlantioEntidade> ListaPlantio = _context.Plantio.Where(o=> o.EmpresaID == colaborador.Usuario.EmpresaID).ToList();
 
-            return Ok(ListaPlantio); }
+            return Ok(ListaPlantio); 
         }
-
     }
 }
