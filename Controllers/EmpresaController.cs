@@ -29,7 +29,16 @@ namespace PIM.api.Controllers
             _context.SaveChanges();
 
             int EmpresaID = _context.Empresa.Single(o=> o.CNPJ.Equals(Empresa.CNPJ)).ID;
-            var UsuarioPadrao = new ColaboradorEntidade(EmpresaID, "Admin", "Admin_" + Empresa.Nome, "Admin", (int)EnumTipoUsuario.Diretor, true);
+            var UsuarioPadrao = new ColaboradorEntidade();
+
+            UsuarioPadrao.Funcao = (int)EnumTipoUsuario.Diretor;
+            UsuarioPadrao.Usuario = new UsuarioEntidade();
+            UsuarioPadrao.Usuario.SerColaborador = true;
+            UsuarioPadrao.Usuario.Nome = "Admin";
+            UsuarioPadrao.Usuario.Login = "Admin";
+            UsuarioPadrao.Usuario.Senha = "Admin_" + Empresa.Nome;
+            UsuarioPadrao.Usuario.EmpresaID = EmpresaID;
+
             _context.Colaboradores.Add(UsuarioPadrao);
             _context.SaveChanges();
 
