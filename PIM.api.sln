@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIM.api", "PIM.api.csproj", "{356508F4-2F15-45E7-BAC4-8AC44C617640}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIM.api", "PIM.api.csproj", "{356508F4-2F15-45E7-BAC4-8AC44C617640}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIM.WEB", "..\web\Web_01\PIM.WEB.csproj", "{6FF69D39-E4F6-44E8-970C-3A3CDFAFC082}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{356508F4-2F15-45E7-BAC4-8AC44C617640}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{356508F4-2F15-45E7-BAC4-8AC44C617640}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{356508F4-2F15-45E7-BAC4-8AC44C617640}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FF69D39-E4F6-44E8-970C-3A3CDFAFC082}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FF69D39-E4F6-44E8-970C-3A3CDFAFC082}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FF69D39-E4F6-44E8-970C-3A3CDFAFC082}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FF69D39-E4F6-44E8-970C-3A3CDFAFC082}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
