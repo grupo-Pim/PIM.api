@@ -64,7 +64,9 @@ namespace PIM.api.Controllers
             var User = _context.Colaboradores.SingleOrDefault(o => o.Usuario.Acesso == Acesso);
             if (User == null) return BadRequest("Usuario não encontrado: " + Acesso);
 
-            List<PermissaoEditarUser> ListaUsuarios = permissaoEditarUsers(User.Usuario.EmpresaID, (EnumTipoUsuario)User.Funcao, User.Usuario.ID, UsuariosAtivos);
+
+            UsuarioEntidade usuario = _context.Usuarios.Single(o => o.ID == User.UsuarioID);
+            List<PermissaoEditarUser> ListaUsuarios = permissaoEditarUsers(usuario.EmpresaID, (EnumTipoUsuario)User.Funcao, usuario.ID, UsuariosAtivos);
 
             return Ok(ListaUsuarios);
         }
@@ -77,6 +79,18 @@ namespace PIM.api.Controllers
             User.Usuario.Acesso = null;
             User.Usuario.Empresa = null;
             return Ok(User);
+        }
+        [HttpGet("Login")]
+        public IActionResult UsuarioLogin(string login, string senha)
+        {
+            var User = _context.Colaboradores.SingleOrDefault(o => o.Usuario.Login == login && o.Usuario.Senha == senha);
+            if (User == null) return BadRequest("Usuario não entrado");
+
+            UsuarioEntidade usuario = _context.Usuarios.Single(o => o.ID == User.UsuarioID);
+
+            usuario.Acesso = Guid.NewGuid();
+            _context.SaveChanges();
+            return Ok(usuario.Acesso);
         }
         [HttpDelete("Colaboradores")]
         public IActionResult InativarUser(Guid Acesso, int ID)
@@ -156,7 +170,9 @@ namespace PIM.api.Controllers
         {
             var User = _context.Colaboradores.SingleOrDefault(o => o.Usuario.Acesso == AcessoColaborador);
             if (User == null) return BadRequest("Usuario não encontrado: " + AcessoColaborador);
-            List<PermissaoEditarUser> ListaUsuarios = permissaoEditarCliente(User.Usuario.EmpresaID, (EnumTipoUsuario)User.Funcao, UsuariosAtivos);
+
+            UsuarioEntidade usuario = _context.Usuarios.Single(o => o.ID == User.UsuarioID);
+            List<PermissaoEditarUser> ListaUsuarios = permissaoEditarCliente(usuario.EmpresaID, (EnumTipoUsuario)User.Funcao, UsuariosAtivos);
             
             return Ok(ListaUsuarios);
         }
