@@ -90,7 +90,8 @@ namespace PIM.api.Controllers
 
             usuario.Acesso = Guid.NewGuid();
             _context.SaveChanges();
-            return Ok(usuario.Acesso);
+            usuario.Senha = "";
+            return Ok(usuario);
         }
         [HttpDelete("Colaboradores")]
         public IActionResult InativarUser(Guid Acesso, int ID)

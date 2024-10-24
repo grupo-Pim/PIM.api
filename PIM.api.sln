@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIM.api", "PIM.api.csproj",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PIM.WEB", "..\web\Web_01\PIM.WEB.csproj", "{6FF69D39-E4F6-44E8-970C-3A3CDFAFC082}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PIM.Desktop", "..\PIM.Desktop\PIM.Desktop.csproj", "{8FCC9128-B9AD-4F08-877B-53F2E879CA22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6FF69D39-E4F6-44E8-970C-3A3CDFAFC082}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FF69D39-E4F6-44E8-970C-3A3CDFAFC082}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6FF69D39-E4F6-44E8-970C-3A3CDFAFC082}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FCC9128-B9AD-4F08-877B-53F2E879CA22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FCC9128-B9AD-4F08-877B-53F2E879CA22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FCC9128-B9AD-4F08-877B-53F2E879CA22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FCC9128-B9AD-4F08-877B-53F2E879CA22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
