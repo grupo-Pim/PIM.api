@@ -5,6 +5,17 @@
         public FornecedorEntidade()
         {
         }
+        public FornecedorEntidade(int id, int empresaID, string Nome, string CNPJ, string Telefone, string Email, int MunicipioID, bool Ativo)
+        {
+            this.ID = id;
+            this.EmpresaID = empresaID; 
+            this.Nome =Nome ; 
+            this.CNPJ =CNPJ ; 
+            this.Telefone =Telefone ; 
+            this.Email =Email ; 
+            this.MunicipioID =MunicipioID ;
+            this.Ativo = Ativo;
+        }
         public int ID { get; set; }
         public EmpresaEntidade Empresa { get; set; }
         public int EmpresaID { get; set; }

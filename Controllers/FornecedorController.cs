@@ -16,27 +16,18 @@ namespace PIM.api.Controllers
             _context = context;
         }
         [HttpPost]
-        public IActionResult AddNovoFornecedor(Guid Acesso, FornecedorEntidade NovoFornecedor)
+        public IActionResult AddNovoFornecedor(FonecedorInput NovoFornecedor)
         {
-            NovoFornecedor.Empresa = null;
-            NovoFornecedor.Municipio = null;
-            
-            var userCriando = _context.Colaboradores.FirstOrDefault(o=> o.Usuario.Acesso == Acesso);
-            if (userCriando == null) return BadRequest("Usuario não encontrado");
-
-            if (userCriando.Funcao != (int)EnumTipoUsuario.Diretor || userCriando.Funcao != (int)EnumTipoUsuario.Coordenador)
-                return Forbid("Usuario não pode criar fornecedor");
-
-            _context.Fornecedor.Add(NovoFornecedor);
+            _context.Fornecedor.Add(new FornecedorEntidade(NovoFornecedor.ID, NovoFornecedor.EmpresaID, NovoFornecedor.Nome, NovoFornecedor.CNPJ, NovoFornecedor.Telefone, NovoFornecedor.Email, NovoFornecedor.MunicipioID, true));
             _context.SaveChanges();
-
+            
             return Created("Fornecedor criado", NovoFornecedor);
         }
         [HttpPut]
-        public IActionResult AlterarFornecedor(Guid Acesso, FornecedorEntidade FornecedorUpdate)
+        public IActionResult AlterarFornecedor(Guid Acesso, FonecedorInput FornecedorUpdate)
         {
-            FornecedorUpdate.Empresa = null;
-            FornecedorUpdate.Municipio = null;
+            //FornecedorUpdate.Empresa = null;
+            //FornecedorUpdate.Municipio = null;
 
             var userCriando = _context.Colaboradores.FirstOrDefault(o => o.Usuario.Acesso == Acesso);
             if (userCriando == null) return BadRequest("Usuario não encontrado");
@@ -82,7 +73,7 @@ namespace PIM.api.Controllers
             _context.SaveChanges();
             return NoContent();
         }
-        [HttpGet("TodosFonecedores")]
+        [HttpGet("TodosFornecedores")]
         public IActionResult TodosFornecedor(Guid Acesso, int EmpresaID)
         {
             var userCriando = _context.Usuarios.FirstOrDefault(o => o.Acesso == Acesso);

@@ -15,7 +15,7 @@
             this.SerColaborador = SerColaborador;
         }
         public int ID { get; set; }
-        public EmpresaEntidade Empresa { get; set; }
+        public EmpresaEntidade? Empresa { get; set; }
         public int EmpresaID { get; set; }
         public string Nome { get; set; }
         public string Login { get; set; }
