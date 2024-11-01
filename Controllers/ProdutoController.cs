@@ -16,9 +16,17 @@ namespace PIM.api.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddNovoProduto(Guid acesso, ProdutoEntidade NovoProduto)
+        public IActionResult AddNovoProduto(Guid acesso, ProdutoInput NovoProdutoInput)
         {
-            NovoProduto.Empresa = null;
+            ProdutoEntidade NovoProduto = new()
+            {
+                ID = NovoProdutoInput.ID,
+                EmpresaID = NovoProdutoInput.EmpresaID,
+                FornecedorID = NovoProdutoInput.FornecedorID,
+                Nome = NovoProdutoInput.Nome,
+                ValorVendaKG = NovoProdutoInput.ValorVendaKG,
+                Ativo = NovoProdutoInput.Ativo
+            };
             var permissaoUser = userPossuiPermissao(acesso);
             if (!permissaoUser.existe) return NotFound("Usuario não existe");
             if (!permissaoUser.possuiPermissao) return Forbid("Usuario não possui permissão");
@@ -28,9 +36,17 @@ namespace PIM.api.Controllers
             return Ok();
         }
         [HttpPut]
-        public IActionResult AlterarProduto(Guid acesso, ProdutoEntidade ProdutoUpdate)
+        public IActionResult AlterarProduto(Guid acesso, ProdutoInput ProdutoUpdateInput)
         {
-            ProdutoUpdate.Empresa = null;
+            ProdutoEntidade ProdutoUpdate = new()
+            {
+                ID = ProdutoUpdateInput.ID,
+                EmpresaID = ProdutoUpdateInput.EmpresaID,
+                FornecedorID = ProdutoUpdateInput.FornecedorID,
+                Nome = ProdutoUpdateInput.Nome,
+                ValorVendaKG = ProdutoUpdateInput.ValorVendaKG,
+                Ativo = ProdutoUpdateInput.Ativo
+            };
             var permissaoUser = userPossuiPermissao(acesso);
             if (!permissaoUser.existe) return NotFound("Usuario não existe");
             if (!permissaoUser.possuiPermissao) return Forbid("Usuario não possui permissão");

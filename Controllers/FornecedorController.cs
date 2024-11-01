@@ -32,7 +32,7 @@ namespace PIM.api.Controllers
             var userCriando = _context.Colaboradores.FirstOrDefault(o => o.Usuario.Acesso == Acesso);
             if (userCriando == null) return BadRequest("Usuario não encontrado");
 
-            if (userCriando.Funcao != (int)EnumTipoUsuario.Diretor || userCriando.Funcao != (int)EnumTipoUsuario.Coordenador)
+            if (userCriando.Funcao != (int)EnumTipoUsuario.Diretor && userCriando.Funcao != (int)EnumTipoUsuario.Coordenador)
                 return Forbid("Usuario não pode criar fornecedor");
 
             var FornecedorAtual = _context.Fornecedor.FirstOrDefault(o => o.ID == FornecedorUpdate.ID);
@@ -42,6 +42,7 @@ namespace PIM.api.Controllers
             FornecedorAtual.Nome = FornecedorUpdate.Nome;
             FornecedorAtual.Email = FornecedorUpdate.Email;
             FornecedorAtual.Telefone = FornecedorUpdate.Telefone;
+            FornecedorAtual.MunicipioID = FornecedorUpdate.MunicipioID;
 
             _context.SaveChanges();
             return Ok("Fornecedor atualizado");
@@ -52,7 +53,7 @@ namespace PIM.api.Controllers
             var userCriando = _context.Usuarios.FirstOrDefault(o => o.Acesso == Acesso);
             if (userCriando == null) return BadRequest("Usuario não encontrado");
 
-            var Fornecedor = _context.Fornecedor.FirstOrDefault(o=> o.ID == FornecedorID);
+            var Fornecedor = _context.Fornecedor.Include(o=> o.Municipio).Include(o=> o.Municipio.UF).FirstOrDefault(o=> o.ID == FornecedorID);
             if (userCriando == null) return BadRequest("Usuario não encontrado");
 
             return Ok(Fornecedor);

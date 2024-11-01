@@ -27,6 +27,14 @@ namespace PIM.api.Controllers
             List<EstadoEntidade> ListaEstado = _context.Estados.ToList();
             return Ok(ListaEstado);
         }
+        [HttpGet("BuscarMunicipios")]
+        public IActionResult BuscarMunicipio(int MunicipioID)
+        {
+            bool estadoExiste = _context.Municipios.Any(o => o.ID == MunicipioID);
+            if (!estadoExiste) return BadRequest("Municipio id não existe: " + MunicipioID);
+            MunicipioEntidade Municipio = _context.Municipios.Include(o=> o.UF).FirstOrDefault(o => o.ID == MunicipioID);
+            return Ok(Municipio);
+        }
 
 
     }
