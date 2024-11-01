@@ -21,7 +21,6 @@ public class FazendoDbContext : DbContext
     public DbSet<EstadoEntidade> Estados { get; set; }
     public DbSet<FornecedorEntidade> Fornecedor { get; set; }
     public DbSet<ProdutoEntidade> Produto { get; set; }
-    //public DbSet<ProdutoFornecedor> ProdutoFornecedor { get; set; }
     public DbSet<LocalPlantioEntidade> LocalPlantio { get; set; }
     public DbSet<PlantioEntidade> Plantio { get; set; }
     public DbSet<MovimentacoesPlantioEntidade> MovimentacoesPlantio { get; set; }
@@ -144,21 +143,6 @@ public class FazendoDbContext : DbContext
                 .HasForeignKey(o => o.MunicipioID)
                 .OnDelete(DeleteBehavior.Restrict);
         });
-        Builder.Entity<ProdutoFornecedor>(o =>
-        {
-            o.HasKey(PF => new { PF.FornecedorID, PF.ProdutoID });
-            o.Property(PF => PF.Valor).IsRequired(false);
-        
-            o.HasOne(ac => ac.Produto)
-                .WithMany(a => a.ProdutoFornecedor)
-                .HasForeignKey(ac => ac.ProdutoID)
-                .OnDelete(DeleteBehavior.Restrict);
-        
-            o.HasOne(ac => ac.Fornecedor)
-                .WithMany(c => c.ProdutoFornecedor)
-                .HasForeignKey(ac => ac.FornecedorID)
-                .OnDelete(DeleteBehavior.Restrict);
-        });
         Builder.Entity<LocalPlantioEntidade>(o =>
         {
             o.HasKey(EE => EE.ID);
@@ -255,6 +239,6 @@ public class FazendoDbContext : DbContext
 
     }
 }
-//dotnet ef migrations add addProdutoPorFornecedor -o Persistence/Migrations
+//dotnet ef migrations add RemoveProdutoFornecedor -o Persistence/Migrations
 //dotnet ef database update
 //dotnet ef migrations remove

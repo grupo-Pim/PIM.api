@@ -13,10 +13,6 @@
         public string Nome { get; set; }
         public int? ValorVendaKG { get; set; }
         public bool Ativo { get; set; }
-
-        public ICollection<ProdutoFornecedor> ProdutoFornecedor { get; set; }
-        
-        
     }
     public class ProdutoInput
     {

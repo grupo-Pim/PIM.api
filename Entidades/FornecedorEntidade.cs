@@ -26,8 +26,6 @@
         public MunicipioEntidade Municipio { get; set; }
         public int MunicipioID { get; set; }
         public bool Ativo { get; set; }
-
-        public ICollection<ProdutoFornecedor> ProdutoFornecedor { get; set; }
     }
     public class FonecedorInput
     {
