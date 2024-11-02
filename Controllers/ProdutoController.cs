@@ -33,7 +33,7 @@ namespace PIM.api.Controllers
 
             _context.Produto.Add(NovoProduto);
             _context.SaveChanges();
-            return Ok();
+            return Created("Produto criado", NovoProduto);
         }
         [HttpPut]
         public IActionResult AlterarProduto(Guid acesso, ProdutoInput ProdutoUpdateInput)
@@ -67,9 +67,9 @@ namespace PIM.api.Controllers
             return Ok(produto);
         }
         [HttpGet]
-        public IActionResult GetListaProduto(int EmpresaID)
+        public IActionResult GetListaProduto(int EmpresaID, int FornecedorID)
         {
-            var produto = _context.Produto.Where(o => o.ID == EmpresaID);
+            var produto = _context.Produto.Where(o => o.EmpresaID == EmpresaID && o.FornecedorID == FornecedorID).ToList();
             return Ok(produto);
         }
         [HttpDelete]

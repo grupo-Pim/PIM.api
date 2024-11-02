@@ -17,22 +17,31 @@ namespace PIM.api.Controllers
         }
 
         [HttpPost]
-        public IActionResult NovoLocal(Guid acesso, LocalPlantioEntidade NovoLocal)
+        public IActionResult NovoLocal(Guid acesso, LocalPlantioInput NovoLocal)
         {
-            NovoLocal.Empresa = null;
             var permissaoUser = userPossuiPermissao(acesso);
             if (!permissaoUser.existe) return NotFound("Usuario não existe");
             if (!permissaoUser.possuiPermissao) return Forbid("Usuario não possui permissão");
 
-            _context.LocalPlantio.Add(NovoLocal);
+            LocalPlantioEntidade localPlantioEntidade = new()
+            {
+                ID = NovoLocal.ID,
+                Tamanho = NovoLocal.Tamanho,
+                EmpresaID = NovoLocal.EmpresaID,
+                Localizacao = NovoLocal.Localizacao,
+                Nome = NovoLocal.Nome,
+                Ativo = NovoLocal.Ativo,
+            };
+
+            _context.LocalPlantio.Add(localPlantioEntidade);
             _context.SaveChanges();
-            return Created("Local criado", NovoLocal);
+            return Created("Local criado", localPlantioEntidade);
         }
         [HttpGet]
         public IActionResult GetListaLocal(int EmpresaID)
         {
             bool EmpresaExiste = _context.Empresa.Any(o=> o.ID == EmpresaID);
-            if (EmpresaExiste) return NotFound("Empresa não econtrada: "+ EmpresaID);
+            if (!EmpresaExiste) return NotFound("Empresa não econtrada: "+ EmpresaID);
 
             List<LocalPlantioEntidade> ListaLocalPlantio = _context.LocalPlantio.Where(o=> o.EmpresaID == EmpresaID).ToList();
             return Ok(ListaLocalPlantio);
@@ -46,19 +55,27 @@ namespace PIM.api.Controllers
             return Ok(LocalAlvo); 
         }
         [HttpPut]
-        public IActionResult AlterarLocal(Guid acesso, LocalPlantioEntidade LocalUpdate)
+        public IActionResult AlterarLocal(Guid acesso, LocalPlantioInput LocalUpdate)
         {
-            LocalUpdate.Empresa = null;
+            LocalPlantioEntidade localPlantioEntidade = new()
+            {
+                ID = LocalUpdate.ID,
+                Tamanho = LocalUpdate.Tamanho,
+                EmpresaID = LocalUpdate.EmpresaID,
+                Localizacao = LocalUpdate.Localizacao,
+                Nome = LocalUpdate.Nome,
+                Ativo = LocalUpdate.Ativo,
+            };
             var permissaoUser = userPossuiPermissao(acesso);
             if (!permissaoUser.existe) return NotFound("Usuario não existe");
             if (!permissaoUser.possuiPermissao) return Forbid("Usuario não possui permissão");
 
-            var localAlvo = _context.LocalPlantio.SingleOrDefault(o=> o.ID == LocalUpdate.ID);
-            if (localAlvo == null) return NotFound("Local não encontrado: "+ LocalUpdate.ID);
+            var localAlvo = _context.LocalPlantio.SingleOrDefault(o=> o.ID == localPlantioEntidade.ID);
+            if (localAlvo == null) return NotFound("Local não encontrado: "+ localPlantioEntidade.ID);
 
-            localAlvo.Tamanho = LocalUpdate.Tamanho;
-            localAlvo.Localizacao = LocalUpdate.Localizacao;
-            localAlvo.Nome = LocalUpdate.Nome;
+            localAlvo.Tamanho = localPlantioEntidade.Tamanho;
+            localAlvo.Localizacao = localPlantioEntidade.Localizacao;
+            localAlvo.Nome = localPlantioEntidade.Nome;
             _context.SaveChanges();
 
             return Ok("Local atualizado");
