@@ -198,6 +198,11 @@ public class FazendoDbContext : DbContext
                 .IsRequired(true)
                 .HasForeignKey(o => o.ProdutoID)
                 .OnDelete(DeleteBehavior.Restrict);
+            o.HasOne(UE => UE.Usuario)
+                .WithMany()
+                .IsRequired(false)
+                .HasForeignKey(o => o.UsuarioID)
+                .OnDelete(DeleteBehavior.Restrict);
             o.HasOne(UE => UE.Cliente)
                 .WithMany()
                 .IsRequired(true)
@@ -239,6 +244,6 @@ public class FazendoDbContext : DbContext
 
     }
 }
-//dotnet ef migrations add RemoveProdutoFornecedor -o Persistence/Migrations
+//dotnet ef migrations add addUsuarioIdEmPedido -o Persistence/Migrations
 //dotnet ef database update
 //dotnet ef migrations remove
