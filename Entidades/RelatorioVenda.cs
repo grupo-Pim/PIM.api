@@ -12,6 +12,13 @@
         public int? UsuarioID { get; set; }
         public int? ProdutoID { get; set; }
         public ProdutoEntidade? Produto { get; set; }
+        public List<RelatorioDiario> Diario { get; set; }
+    }
+    public class RelatorioDiario
+    {
+        public DateTime dia { get; set; }
+        public float ValorVenda { get; set; }
+        public int QntProdutoVendido { get; set; }
     }
     public class RelatorioInput
     {
