@@ -228,6 +228,7 @@ public class FazendoDbContext : DbContext
             o.Property(UE => UE.DataModificacao).IsRequired(true);
             o.Property(UE => UE.EtapaAntiga).IsRequired(true);
             o.Property(UE => UE.EtapaAtualizada).IsRequired(true);
+            o.Property(UE => UE.QntKG).IsRequired(true);
 
             o.HasOne(UE => UE.Colaborador)
                 .WithMany()
@@ -244,6 +245,6 @@ public class FazendoDbContext : DbContext
 
     }
 }
-//dotnet ef migrations add addUsuarioIdEmPedido -o Persistence/Migrations
+//dotnet ef migrations add addQntKG -o Persistence/Migrations
 //dotnet ef database update
 //dotnet ef migrations remove
