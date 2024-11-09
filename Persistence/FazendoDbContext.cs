@@ -25,6 +25,7 @@ public class FazendoDbContext : DbContext
     public DbSet<PlantioEntidade> Plantio { get; set; }
     public DbSet<MovimentacoesPlantioEntidade> MovimentacoesPlantio { get; set; }
     public DbSet<PedidosEntidade> Pedidos { get; set; }
+    public DbSet<SolicitacaoMateriaPrima> SolcitacaoCompraMateriaPrima { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder Builder)
@@ -242,9 +243,21 @@ public class FazendoDbContext : DbContext
                 .HasForeignKey(o => o.PlantioID)
                 .OnDelete(DeleteBehavior.Restrict);
         });
+        Builder.Entity<SolicitacaoMateriaPrima>(o =>
+        {
+            o.HasKey(EE => EE.ID);
+            o.Property(UE => UE.Descricao).IsRequired(true);
+            o.Property(UE => UE.Quantidade).IsRequired(true);
+
+            o.HasOne(UE => UE.UsuarioSolcitante)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.UsuarioSolcitanteID)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
 
     }
 }
-//dotnet ef migrations add addQntKG -o Persistence/Migrations
+//dotnet ef migrations add SolcitacaoMateriaPrima -o Persistence/Migrations
 //dotnet ef database update
 //dotnet ef migrations remove
