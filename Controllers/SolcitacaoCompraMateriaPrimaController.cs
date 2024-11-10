@@ -29,16 +29,17 @@ namespace PIM.api.Controllers
             return Ok(solcitacao);
         }
         [HttpPost]
-        public IActionResult PostSolcitacao(SolicitacaoMateriaPrimaInput SolicitacaoInput)
+        public IActionResult PostSolcitacao(Guid Acesso, SolicitacaoMateriaPrimaInput SolicitacaoInput)
         {
-            var solicitante = _context.Usuarios.SingleOrDefault(o => o.ID == SolicitacaoInput.UsuarioSolcitanteID);
+            var solicitante = _context.Usuarios.SingleOrDefault(o => o.Acesso == Acesso);
             if (solicitante == null) return NotFound("Solicitante não encontrado");
 
             var solcitacao = SolicitacaoInput.Converter();
+            solcitacao.UsuarioSolcitanteID = solicitante.ID;
             _context.SolcitacaoCompraMateriaPrima.Add(solcitacao);
             _context.SaveChanges();
 
-            return Created("Solicitação compra de materia prima criada", solcitacao);
+            return Ok("Solicitação compra de materia prima criada");
         }
         [HttpPut]
         public IActionResult PutSolcitacao(Guid Acesso ,SolicitacaoMateriaPrimaInput SolicitacaoInput)
@@ -60,7 +61,7 @@ namespace PIM.api.Controllers
         {
             var solicitante = _context.Usuarios.SingleOrDefault(o => o.Acesso == Acesso);
             if (solicitante == null) return NotFound("Usuario não encontrado");
-            var solicitacao = _context.SolcitacaoCompraMateriaPrima.SingleOrDefault(o => o.ID == SolicitacaoID);
+            var solicitacao = _context.SolcitacaoCompraMateriaPrima.Include(o=> o.UsuarioSolcitante).SingleOrDefault(o => o.ID == SolicitacaoID && o.UsuarioSolcitante.EmpresaID == solicitante.EmpresaID);
             if (solicitacao == null) return NotFound("Solicitação não encontrada");
 
             _context.SolcitacaoCompraMateriaPrima.Remove(solicitacao);

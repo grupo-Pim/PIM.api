@@ -21,7 +21,6 @@ namespace PIM.api.Entidades
         public int ID { get; set; }
         public string Descricao { get; set; }
         public int UsuarioSolcitanteID { get; set; }
-        public int FornecedorID { get; set; }
         public int Quantidade { get; set; }
         
         public SolicitacaoMateriaPrima Converter()
