@@ -18,7 +18,7 @@ namespace PIM.api.Controllers
         public IActionResult Estoques(int empresaID)
         {
             bool empresaExiste = _context.Empresa.Any(o=> o.ID == empresaID);
-            if (empresaExiste) return BadRequest("Empresa não encontrado");
+            if (!empresaExiste) return BadRequest("Empresa não encontrado");
 
             var listaEstoque = _context.Estoque.Include(o => o.Produto)
                 .Where(o => o.Produto.Ativo && o.Produto.EmpresaID == empresaID).ToList();
@@ -40,7 +40,7 @@ namespace PIM.api.Controllers
 
             return Ok(listaProdutos);
         }
-        [HttpGet]
+        [HttpGet("Unico")]
         public IActionResult Estoque(int produtoID)
         {
             var produtos = _context.Produto.Include(o => o.Fornecedor)
