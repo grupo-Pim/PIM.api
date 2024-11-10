@@ -26,6 +26,7 @@ public class FazendoDbContext : DbContext
     public DbSet<MovimentacoesPlantioEntidade> MovimentacoesPlantio { get; set; }
     public DbSet<PedidosEntidade> Pedidos { get; set; }
     public DbSet<SolicitacaoMateriaPrima> SolcitacaoCompraMateriaPrima { get; set; }
+    public DbSet<EstoqueEntidade> Estoque { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder Builder)
@@ -255,9 +256,26 @@ public class FazendoDbContext : DbContext
                 .HasForeignKey(o => o.UsuarioSolcitanteID)
                 .OnDelete(DeleteBehavior.Restrict);
         });
+        Builder.Entity<EstoqueEntidade>(o =>
+        {
+            o.HasKey(EE => EE.ID);
+            o.Property(UE => UE.Quantidade).IsRequired(true);
+
+            o.HasOne(UE => UE.UsuarioADD)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.UsuarioID)
+                .OnDelete(DeleteBehavior.Restrict);
+            o.HasOne(UE => UE.Produto)
+                .WithMany()
+                .IsRequired(true)
+                .HasForeignKey(o => o.ProdutoID)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+        Builder.Entity<MovimentacoesPlantioEntidade>().ToTable(tb => tb.HasTrigger("AtualizarEstoqueMovimentacao"));
 
     }
 }
-//dotnet ef migrations add SolcitacaoMateriaPrima -o Persistence/Migrations
+//dotnet ef migrations add TriggerEstoque -o Persistence/Migrations
 //dotnet ef database update
 //dotnet ef migrations remove

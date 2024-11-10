@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PIM.api.Persistence;
 
@@ -11,9 +12,11 @@ using PIM.api.Persistence;
 namespace PIM.api.Persistence.Migrations
 {
     [DbContext(typeof(FazendoDbContext))]
-    partial class FazendoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241110141150_EstoqueTabela")]
+    partial class EstoqueTabela
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,7 +183,7 @@ namespace PIM.api.Persistence.Migrations
 
                     b.HasIndex("UsuarioID");
 
-                    b.ToTable("Estoque");
+                    b.ToTable("EstoqueEntidade");
                 });
 
             modelBuilder.Entity("PIM.api.Entidades.FornecedorEntidade", b =>
@@ -292,10 +295,7 @@ namespace PIM.api.Persistence.Migrations
 
                     b.HasIndex("PlantioID");
 
-                    b.ToTable("MovimentacoesPlantio", t =>
-                        {
-                            t.HasTrigger("AtualizarEstoqueMovimentacao");
-                        });
+                    b.ToTable("MovimentacoesPlantio");
                 });
 
             modelBuilder.Entity("PIM.api.Entidades.MunicipioEntidade", b =>
