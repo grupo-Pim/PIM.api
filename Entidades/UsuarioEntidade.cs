@@ -34,8 +34,12 @@
         public string Senha { get; set; }
         public string Telefone { get; set; }
         public int Funcao { get; set; }
-        public Guid? Acesso { get; set; }
         public bool Ativo { get; set; }
+        public bool SerColaborador { get; set; }
+        public UsuarioEntidade Converter()
+        {
+            return new UsuarioEntidade(EmpresaID, Nome, Login, Senha, SerColaborador);
+        }
     }
     public class PermissaoEditarUser
     {

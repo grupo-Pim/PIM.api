@@ -16,9 +16,11 @@ namespace PIM.api.Controllers
             _context = context;
         }
         [HttpPost]
-        public IActionResult AddNovoFornecedor(FonecedorInput NovoFornecedor)
+        public IActionResult AddNovoFornecedor(Guid acesso, FonecedorInput NovoFornecedor)
         {
-            _context.Fornecedor.Add(new FornecedorEntidade(NovoFornecedor.ID, NovoFornecedor.EmpresaID, NovoFornecedor.Nome, NovoFornecedor.CNPJ, NovoFornecedor.Telefone, NovoFornecedor.Email, NovoFornecedor.MunicipioID, true));
+            var usuarioLogin = _context.Usuarios.SingleOrDefault(o => o.Acesso == acesso);
+            if (usuarioLogin == null) BadRequest("Usuario não encontrado");
+            _context.Fornecedor.Add(new FornecedorEntidade(NovoFornecedor.ID, usuarioLogin.EmpresaID, NovoFornecedor.Nome, NovoFornecedor.CNPJ, NovoFornecedor.Telefone, NovoFornecedor.Email, NovoFornecedor.MunicipioID, true));
             _context.SaveChanges();
             
             return Created("Fornecedor criado", NovoFornecedor);

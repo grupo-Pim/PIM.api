@@ -16,7 +16,7 @@ namespace PIM.api.Controllers
         }
 
         [HttpPost("Colaboradores")]
-        public IActionResult AddNovoUsuario(Guid Acesso, ColaboradorEntidade NovoUsuario)
+        public IActionResult AddNovoUsuario(Guid Acesso, ColaboradorInput NovoUsuario)
         {
             var Permissao = PossuiPermissao(Acesso);
 
@@ -26,10 +26,8 @@ namespace PIM.api.Controllers
                 return Forbid(Permissao.Mensagem);
 
             int empresaID = _context.Colaboradores.Single(o => o.Usuario.Acesso == Acesso).Usuario.EmpresaID;
-            NovoUsuario.Usuario.Empresa = null;
-            NovoUsuario.Usuario.EmpresaID = empresaID;
 
-            _context.Colaboradores.Add(NovoUsuario);
+            _context.Colaboradores.Add(NovoUsuario.Converter());
             _context.SaveChanges();
 
             return Created("Usuario criado", NovoUsuario);
