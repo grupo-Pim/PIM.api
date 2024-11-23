@@ -6,13 +6,15 @@
         {
             
         }
-        public UsuarioEntidade(int empresaID, string Nome, string Login, string Senha, bool SerColaborador)
+        public UsuarioEntidade(int empresaID, string Nome, string Login, string Senha, string Telefone, bool SerColaborador, bool Ativo)
         {
             this.EmpresaID = empresaID;
             this.Nome = Nome;
             this.Login = Login;
             this.Senha = Senha;
+            this.Telefone = Telefone;
             this.SerColaborador = SerColaborador;
+            this.Ativo = Ativo;
         }
         public int ID { get; set; }
         public EmpresaEntidade? Empresa { get; set; }
@@ -38,7 +40,7 @@
         public bool SerColaborador { get; set; }
         public UsuarioEntidade Converter()
         {
-            return new UsuarioEntidade(EmpresaID, Nome, Login, Senha, SerColaborador);
+            return new UsuarioEntidade(EmpresaID, Nome, Login, Senha, Telefone, SerColaborador, Ativo);
         }
     }
     public class PermissaoEditarUser
