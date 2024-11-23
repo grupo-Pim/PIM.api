@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PIM.api.Entidades;
 using PIM.api.Persistence;
 using static PIM.api.Enum.EnumSistemaFazenda;
@@ -25,7 +26,7 @@ namespace PIM.api.Controllers
             else if (!Permissao.PossuiPermissao)
                 return Forbid(Permissao.Mensagem);
 
-            int empresaID = _context.Colaboradores.Single(o => o.Usuario.Acesso == Acesso).Usuario.EmpresaID;
+            int empresaID = _context.Colaboradores.Include(o=> o.Usuario).Single(o => o.Usuario.Acesso == Acesso).Usuario.EmpresaID;
 
             _context.Colaboradores.Add(NovoUsuario.Converter());
             _context.SaveChanges();
